@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'screens/scanner_screen.dart';
 
-void main() {
-  runApp(const VotingApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+
+  runApp(const MyApp());
 }
 
-class VotingApp extends StatelessWidget {
-  const VotingApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'QR Voting System',
+      title: 'BOHECO I Election System',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF166534)),
+        useMaterial3: true,
       ),
-      home: ScannerScreen(),
+      home: const ScannerScreen(),
     );
   }
 }
