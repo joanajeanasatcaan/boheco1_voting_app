@@ -13,22 +13,18 @@ class BallotScreen extends StatefulWidget {
 
 class _BallotScreenState extends State<BallotScreen> {
   String? selectedCandidate;
-  
+
   final List<Map<String, String>> boardCandidates = [
     {
       'name': 'Juan Pedro David',
       'nickname': 'Toto',
-      'image': 'assets/placeholder.png', 
+      'image': 'assets/no_profile.png',
     },
-    {
-      'name': 'No Vote',
-      'nickname': '',
-      'image': 'assets/placeholder.png',
-    },
+    {'name': 'No Vote', 'nickname': '', 'image': 'assets/placeholder.png'},
     {
       'name': 'Ismael Yll Tan',
       'nickname': 'Tantan',
-      'image': 'assets/placeholder.png',
+      'image': 'assets/no_profile.png',
     },
   ];
 
@@ -51,7 +47,9 @@ class _BallotScreenState extends State<BallotScreen> {
       MaterialPageRoute(
         builder: (context) => ReceiptScreen(
           voter: widget.voter,
-          selectedBoardMembers: selectedCandidate != null ? [selectedCandidate!] : [],
+          selectedBoardMembers: selectedCandidate != null
+              ? [selectedCandidate!]
+              : [],
         ),
       ),
     );
@@ -64,11 +62,7 @@ class _BallotScreenState extends State<BallotScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            Image.asset(
-              'assets/logo.png', 
-              width: 40,
-              height: 40,
-            ),
+            Image.asset('assets/logo.png', width: 40, height: 40),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -97,159 +91,157 @@ class _BallotScreenState extends State<BallotScreen> {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            
+
             Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, 
-                  crossAxisSpacing: 15, 
-                  mainAxisSpacing: 15, 
-                  childAspectRatio: 0.9,
-                ),
-                itemCount: boardCandidates.length,
-                itemBuilder: (context, index) {
-                  final candidate = boardCandidates[index];
-                  final isSelected = selectedCandidate == candidate['name'];
-                  final isNoVote = candidate['name'] == 'No Vote';
-                  
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedCandidate = candidate['name'];
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isSelected 
-                            ? Colors.green[50] 
-                            : Colors.white,
-                        border: Border.all(
-                          color: isSelected ? Colors.green : Colors.grey[300]!,
-                          width: isSelected ? 2 : 1,
+              child: Center(
+                // This centers vertically
+                child: Padding(
+                  // This adds horizontal padding
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: GridView.builder(
+                    shrinkWrap: true, // Required when using Center
+                    physics:
+                        const NeverScrollableScrollPhysics(), // Optional: disable scrolling if grid fits
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.75,
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: const Offset(0, 2),
+                    itemCount: boardCandidates.length,
+                    itemBuilder: (context, index) {
+                      // ... your existing itemBuilder code
+                      final candidate = boardCandidates[index];
+                      final isSelected = selectedCandidate == candidate['name'];
+                      final isNoVote = candidate['name'] == 'No Vote';
+
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCandidate = candidate['name'];
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected ? Colors.green[50] : Colors.white,
+                            border: Border.all(
+                              color: isSelected
+                                  ? Colors.green
+                                  : Colors.grey[300]!,
+                              width: isSelected ? 2 : 1,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Candidate image placeholder
-                            Container(
-                              width: 70,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                color: isNoVote 
-                                    ? Colors.grey[200] 
-                                    : (isSelected ? Colors.green[100] : Colors.grey[100]),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isNoVote 
-                                      ? Colors.grey[300]! 
-                                      : (isSelected ? Colors.green : Colors.grey[300]!),
-                                  width: 2,
-                                ),
-                              ),
-                              child: Center(
-                                child: isNoVote
-                                    ? Icon(
-                                        Icons.block,
-                                        color: Colors.grey[600],
-                                        size: 35,
-                                      )
-                                    : Text(
-                                        candidate['name']!.substring(0, 1),
-                                        style: TextStyle(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.bold,
-                                          color: isSelected 
-                                              ? Colors.green[800] 
-                                              : Colors.grey[700],
-                                        ),
-                                      ),
-                              ),
-                            ),
-                            
-                            const SizedBox(height: 12),
-                            
-                            // Candidate name
-                            Text(
-                              candidate['name']!,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: isSelected 
-                                    ? FontWeight.bold 
-                                    : FontWeight.w500,
-                                color: isSelected 
-                                    ? Colors.green[800] 
-                                    : Colors.black87,
-                              ),
-                            ),
-                            
-                            // Nickname if available
-                            if (candidate['nickname']!.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                '"${candidate['nickname']}"',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey[600],
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ],
-                            
-                            // No Vote description
-                            if (isNoVote) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                'Abstain from voting',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                            
-                            // Selection checkmark (optional)
-                            if (isSelected)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.green,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: isNoVote
+                                        ? Colors.grey[200]
+                                        : (isSelected
+                                              ? Colors.green[100]
+                                              : Colors.grey[100]),
                                     shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isNoVote
+                                          ? Colors.grey[300]!
+                                          : (isSelected
+                                                ? Colors.green
+                                                : Colors.grey[300]!),
+                                      width: 1.5,
+                                    ),
                                   ),
-                                  child: const Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 16,
+                                  child: Center(
+                                    child: isNoVote
+                                        ? Icon(
+                                            Icons.block,
+                                            color: Colors.grey[600],
+                                            size: 22,
+                                          )
+                                        : Text(
+                                            candidate['name']!.substring(0, 1),
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: isSelected
+                                                  ? Colors.green[800]
+                                                  : Colors.grey[700],
+                                            ),
+                                          ),
                                   ),
                                 ),
-                              ),
-                          ],
+                                const SizedBox(height: 6),
+                                Text(
+                                  candidate['name']!,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: isSelected
+                                        ? Colors.green[800]
+                                        : Colors.black87,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                if (candidate['nickname']!.isNotEmpty)
+                                  Text(
+                                    '"${candidate['nickname']}"',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey[600],
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                if (isNoVote)
+                                  Text(
+                                    'Abstain',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                if (isSelected)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.green,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 10,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                },
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
-            
+
             const SizedBox(height: 10),
-            
+
             // Voter info and submit button
             Container(
               decoration: BoxDecoration(
@@ -311,18 +303,16 @@ class _BallotScreenState extends State<BallotScreen> {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: selectedCandidate != null 
-                                ? Colors.green[50] 
+                            color: selectedCandidate != null
+                                ? Colors.green[50]
                                 : Colors.grey[200],
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
-                            selectedCandidate != null 
-                                ? 'Ready' 
-                                : 'Select',
+                            selectedCandidate != null ? 'Ready' : 'Select',
                             style: TextStyle(
-                              color: selectedCandidate != null 
-                                  ? Colors.green[700] 
+                              color: selectedCandidate != null
+                                  ? Colors.green[700]
                                   : Colors.grey[600],
                               fontWeight: FontWeight.w500,
                               fontSize: 11,
@@ -331,9 +321,9 @@ class _BallotScreenState extends State<BallotScreen> {
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 15),
-                    
+
                     // Submit button
                     SizedBox(
                       width: double.infinity,
@@ -341,7 +331,9 @@ class _BallotScreenState extends State<BallotScreen> {
                       child: ElevatedButton(
                         onPressed: _submitVote,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: canSubmit ? Colors.green[700] : Colors.grey[400],
+                          backgroundColor: canSubmit
+                              ? Colors.green[700]
+                              : Colors.grey[400],
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -362,7 +354,7 @@ class _BallotScreenState extends State<BallotScreen> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 10),
           ],
         ),
