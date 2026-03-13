@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../services/api_service.dart';
 import 'voter_screen.dart';
+import '../models/voter.dart';
 
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key});
@@ -163,8 +164,8 @@ class _ScannerScreenState extends State<ScannerScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              '$voterName''s household has already cast their vote.',
-            textAlign: TextAlign.center,
+              '$voterName\'s household has already cast their vote.',
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 13, color: Colors.grey[600]),
             ),
             const SizedBox(height: 20),
@@ -198,10 +199,48 @@ class _ScannerScreenState extends State<ScannerScreen>
     ));
   }
 
+  // Temporary method to navigate to voter screen(delete later)
+  void _navigateToTempVoter() {
+  final tempVoter = Voter(
+    memberId: 'M-2024-001',
+    firstName: 'Juan',
+    lastName: 'Dela Cruz',
+    middleName: 'Santos',
+    suffix: null,
+    district: '1',
+    gender: 'Male',
+    birthDate: '1980-01-01',
+    contactNumber: '09123456789',
+    email: 'juan.delacruz@email.com',
+    isVerified: true,
+    hasVoted: false,
+    spouse: null,
+    member: null,
+  );
+  
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => VoterScreen(voter: tempVoter),
+    ),
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
+      // Add floating action button for temporary navigation (delete later)
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToTempVoter,
+        backgroundColor: const Color(0xFF166534),
+        child: const Icon(Icons.arrow_forward, color: Colors.white),
+        tooltip: 'Temporary: Go to Voter Screen',
+      ),
+
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SafeArea(
         child: Column(
           children: [

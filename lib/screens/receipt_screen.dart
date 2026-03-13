@@ -6,7 +6,7 @@ import 'success_screen.dart';
 
 class ReceiptScreen extends StatefulWidget {
   final Voter voter;
-  final Nominee? selectedNominee; // null = "No Vote / Abstain"
+  final Nominee? selectedNominee;
 
   const ReceiptScreen({
     super.key,
@@ -29,7 +29,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
 
     final result = await ApiService.submitVote(
       nomineeId: widget.selectedNominee?.id ?? -1,
-      memberId:  widget.voter.memberId,
+      memberId: widget.voter.memberId,
     );
 
     if (!mounted) return;
@@ -46,7 +46,8 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
           content: Text(result.errorMessage ?? 'Failed to submit vote.'),
           backgroundColor: Colors.red[600],
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8)),
         ),
       );
     }
@@ -56,270 +57,182 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
   Widget build(BuildContext context) {
     final voter = widget.voter;
     final selectedNominee = widget.selectedNominee;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
-      appBar: AppBar(
-        title: const Text('Voting Receipt'),
-        backgroundColor: Colors.green[700],
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      backgroundColor: const Color(0xFF5F5F5F),
+      body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ── Header
-            _ReceiptHeader(),
 
-            const SizedBox(height: 20),
-
-            // ── Voter details card
-            _InfoCard(
-              title: 'VOTER INFORMATION',
-              titleColor: Colors.blue[700]!,
-              children: [
-                _InfoRow(label: 'Name',     value: voter.fullName),
-                _InfoRow(label: 'Member ID',value: voter.memberId),
-                _InfoRow(label: 'District', value: voter.district != null
-                    ? 'District ${voter.district}' : '—'),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // ── Vote details card
-            _InfoCard(
-              title: 'BOARD OF DIRECTORS VOTE',
-              titleColor: Colors.blue[700]!,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Row(
-                    children: [
-                      Icon(
-                        isNoVote
-                            ? Icons.block
-                            : Icons.how_to_vote_rounded,
-                        color: isNoVote
-                            ? Colors.grey
-                            : Colors.green[700],
-                        size: 20,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          isNoVote
-                              ? 'No Vote (Abstain)'
-                              : selectedNominee!.fullName,
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (!isNoVote &&
-                    (selectedNominee!.nickname?.isNotEmpty ?? false))
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30, bottom: 4),
-                    child: Text(
-                      '"${selectedNominee!.nickname}"',
-                      style: TextStyle(
-                          color: Colors.grey[600],
-                          fontStyle: FontStyle.italic,
-                          fontSize: 13),
-                    ),
-                  ),
-                if (!isNoVote && selectedNominee!.district != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30),
-                    child: Text(
-                      'District ${selectedNominee!.district}',
-                      style:
-                      TextStyle(color: Colors.grey[500], fontSize: 12),
-                    ),
-                  ),
-              ],
-            ),
-
-            const Spacer(),
-
-            // ── Warning note
+            /// RECEIPT PAPER
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              width: 340,
+              padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                color: Colors.amber[50],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.amber[200]!),
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  )
+                ],
               ),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline,
-                      color: Colors.amber[700], size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
+
+                  /// HEADER
+                  const Center(
                     child: Text(
-                      'Once confirmed, your vote cannot be changed.',
+                      "Boheco 1 Election",
                       style: TextStyle(
-                          fontSize: 12, color: Colors.amber[900]),
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// VOTER DETAILS
+                  Text(
+                    "Voter's Name: ${voter.fullName}",
+                    style: const TextStyle(fontSize: 14),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    "Voter's ID Number: ${voter.memberId}",
+                    style: const TextStyle(fontSize: 14),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    "Voter's address: District ${voter.district ?? '-'}",
+                    style: const TextStyle(fontSize: 14),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  const Text(
+                    "****************************************",
+                    style: TextStyle(letterSpacing: 1),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  /// VOTE RESULT
+                  const Text(
+                    "You voted:",
+                    style: TextStyle(fontSize: 14),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  Text(
+                    isNoVote
+                        ? "No Vote (Abstain)"
+                        : selectedNominee!.fullName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  const Text(
+                    "****************************************",
+                    style: TextStyle(letterSpacing: 1),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  /// DATE & TIME
+                  Text(
+                    "Date: ${DateTime.now().toLocal().toString().split(' ')[0]}",
+                    style: const TextStyle(fontSize: 13),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    "Time: ${TimeOfDay.now().format(context)}",
+                    style: const TextStyle(fontSize: 13),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 30),
 
-            // ── Action buttons
+            /// ACTION BUTTONS
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
+
+                /// CANCEL
+                SizedBox(
+                  width: 140,
+                  height: 48,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: const BorderSide(color: Colors.grey),
+                      backgroundColor: Colors.grey[200],
+                      side: const BorderSide(color: Colors.black26),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel',
-                        style: TextStyle(color: Colors.grey)),
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
+
+                const SizedBox(width: 20),
+
+                /// CONFIRM & PRINT
+                SizedBox(
+                  width: 160,
+                  height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green[700],
+                      backgroundColor: const Color(0xFF15803D),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      elevation: 0,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     onPressed: _isSubmitting ? null : _confirmVote,
                     child: _isSubmitting
                         ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                        : const Text('Confirm Vote',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            "Confirm & Print",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
               ],
             ),
-
-            const SizedBox(height: 10),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// ── Widgets ───────────────────────────────────────────────────
-
-class _ReceiptHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: const BoxDecoration(
-            color: Color(0xFFDCFCE7),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(Icons.check_circle_rounded,
-              color: Color(0xFF166534), size: 44),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          'Review Your Vote',
-          style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Please verify before confirming',
-          style: TextStyle(fontSize: 13, color: Colors.grey[500]),
-        ),
-      ],
-    );
-  }
-}
-
-class _InfoCard extends StatelessWidget {
-  final String title;
-  final Color titleColor;
-  final List<Widget> children;
-
-  const _InfoCard({
-    required this.title,
-    required this.titleColor,
-    required this.children,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[200]!),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                    letterSpacing: 0.5,
-                    color: titleColor)),
-            const Divider(height: 16),
-            ...children,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(label,
-                style:
-                TextStyle(fontSize: 12, color: Colors.grey[500])),
-          ),
-          Expanded(
-            child: Text(value,
-                style: const TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w500)),
-          ),
-        ],
       ),
     );
   }
